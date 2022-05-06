@@ -29,6 +29,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.4.0
         with:
          charts_dir: charts/longhorn/chart
+         version: 1.2.4-dev
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
