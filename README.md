@@ -1,2 +1,2 @@
 # longhorn-wrapper
-# wrapper to create helm repo from longhorn/longhorn
+# version: 1.2.4-dev
