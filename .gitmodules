@@ -1,0 +1,3 @@
+[submodule "charts/longhorn"]
+	path = charts/longhorn
+	url = https://github.com/longhorn/longhorn.git
