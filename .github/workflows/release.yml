@@ -18,8 +18,13 @@ jobs:
         run: |
           git submodule update --init
           ls -la charts
+          ls -la charts/longhorn-repo
+          ls -la charts/longhorn-repo/chart
+          mv charts/longhorn-repo/chart charts/longhorn
+          ls -la charts
           ls -la charts/longhorn
-          ls -la charts/longhorn/chart
+          ls -la charts/longhorn/templates
+          echo "repeating ls for moved longhorn"
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
