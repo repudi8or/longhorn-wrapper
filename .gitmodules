@@ -1,3 +1,3 @@
-[submodule "charts/longhorn-repo"]
-	path = charts/longhorn-repo
+[submodule "longhorn-repo"]
+	path = longhorn-repo
 	url = https://github.com/longhorn/longhorn.git
