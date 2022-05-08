@@ -19,6 +19,7 @@ jobs:
           git submodule update --init
           ls -la charts
           ls -la charts/longhorn
+          ls -la charts/longhorn/chart
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
