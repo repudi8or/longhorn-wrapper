@@ -23,14 +23,11 @@ jobs:
       - name: Configure Git
         run: |
           git submodule update --init
-          ls -la charts
-          ls -la longhorn-repo
-          ls -la longhorn-repo/chart
+          # move the chart into place
           mv longhorn-repo/chart charts/longhorn
-          echo "repeating ls for moved longhorn"
-          ls -la charts
-          ls -la charts/longhorn
           ls -la charts/longhorn/templates
+          # try changing the chart version
+          sed -i 's/1.3.0-dev/1.2.5-dev/g' charts/longhorn/chart/Chart.yaml
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
@@ -39,23 +36,21 @@ jobs:
         with:
           version: v3.8.1
 
-      # - name: Run chart-releaser
-      #   uses: helm/chart-releaser-action@v1.4.0
-      #   env:
-      #     CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.4.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Download chart releaser
-        run: |
-          curl -sSLo hcr.tar.gz "https://github.com/pete911/hcr/releases/download/v0.0.2/hcr_0.0.2_linux_amd64.tar.gz"
-          tar -xzf hcr.tar.gz
-          rm -f hcr.tar.gz
-      - name: Package and release chart
-        run: |
-          git config user.email "gh-action@users.noreply.github.com"
-          git config user.name "gh-action"
-          ./hcr -token "${{ secrets.GITHUB_TOKEN }}" -charts-dir charts/longhorn
-
-
+      # - name: Download chart releaser
+      #   run: |
+      #     curl -sSLo hcr.tar.gz "https://github.com/pete911/hcr/releases/download/v0.0.2/hcr_0.0.2_linux_amd64.tar.gz"
+      #     tar -xzf hcr.tar.gz
+      #     rm -f hcr.tar.gz
+      # - name: Package and release chart
+      #   run: |
+      #     git config user.email "gh-action@users.noreply.github.com"
+      #     git config user.name "gh-action"
+      #     ./hcr -token "${{ secrets.GITHUB_TOKEN }}" -charts-dir charts/longhorn
 
 # name: Release Charts
 
