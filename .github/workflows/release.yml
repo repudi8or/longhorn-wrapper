@@ -28,6 +28,7 @@ jobs:
           ls -la charts/longhorn/templates
           # # try changing the chart version
           sed -i 's/1.3.0-dev/1.2.9/g' charts/longhorn/Chart.yaml
+          head charts/longhorn/Chart.yaml
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
