@@ -1,0 +1,107 @@
+name: Release Charts
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Configure Git
+        run: |
+          git submodule update --init
+          # move the chart into place
+          mv longhorn-repo/chart charts/longhorn
+          ls -la charts/longhorn/templates
+          # # try changing the chart version
+          ed -i 's/1.3.0-dev/1.2.9/g' charts/longhorn/Chart.yaml
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.8.1
+
+      # - name: manual chart releaser
+      #   run: |
+      #     helm repo index
+      #     ls -la
+
+
+      # - name: Run chart-releaser
+      #   uses: helm/chart-releaser-action@v1.4.0
+      #   env:
+      #     CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Download chart releaser
+        run: |
+          curl -sSLo hcr.tar.gz "https://github.com/pete911/hcr/releases/download/v0.0.2/hcr_0.0.2_linux_amd64.tar.gz"
+          tar -xzf hcr.tar.gz
+          rm -f hcr.tar.gz
+
+      - name: Package and release chart
+        run: |
+          git config user.email "gh-action@users.noreply.github.com"
+          git config user.name "gh-action"
+          ./hcr -token "${{ secrets.GITHUB_TOKEN }}" -charts-dir charts
+
+# name: Release Charts
+
+# on:
+#   push:
+#     branches:
+#       - main
+      
+# permissions:
+#   contents: write
+#   issues: write
+#   pull-requests: write
+
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
+
+#       - name: Configure Git
+#         run: |
+#           git submodule update --init
+#           git config user.name "$GITHUB_ACTOR"
+#           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+#       - name: Run chart-releaser
+#         uses: helm/chart-releaser-action@v1.4.0
+#         with:
+#          charts_dir: charts/longhorn/chart
+#          version: 1.2.4-dev
+#         env:
+#           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+#           CR_SKIP_EXISTING: "false"
+
+      # - name: Download chart releaser
+      #   run: |
+      #     curl -sSLo hcr.tar.gz "https://github.com/pete911/hcr/releases/download/v0.0.2/hcr_0.0.2_linux_amd64.tar.gz"
+      #     tar -xzf hcr.tar.gz
+      #     rm -f hcr.tar.gz
+      # - name: Package and release chart
+      #   run: |
+      #     git config user.email "gh-action@users.noreply.github.com"
+      #     git config user.name "gh-action"
+      #     ./hcr -token "${{ secrets.GITHUB_TOKEN }}" -charts-dir chart
